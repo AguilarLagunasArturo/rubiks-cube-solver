@@ -1,4 +1,3 @@
-// Working
 Rubik c;
 boolean fuctional = false;
 
