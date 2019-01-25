@@ -1,9 +1,9 @@
 # __Useless Rubik's Cube Solver__
-___
+
 ### Working on:
 - Algorithm to solve 3x3 cube.
 - Generalizing moves from 3x3 cubes to NxN cubes.
-___
+
 ### Features:
 - Generate NxN cubes.
 - Perform moves for a 2x2 cube.
