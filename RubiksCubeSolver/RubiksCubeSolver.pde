@@ -16,7 +16,6 @@ void draw() {
 }
 
 void keyPressed() {
-
   if (!c.cube3D.moving) {
     switch(key) {
       case 'x':
