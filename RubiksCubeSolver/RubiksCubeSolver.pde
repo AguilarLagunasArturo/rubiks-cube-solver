@@ -1,3 +1,4 @@
+// Working
 Rubik c;
 boolean fuctional = false;
 
@@ -12,7 +13,7 @@ void draw() {
   translate(width/2, height/2);
   rotateX(map(mouseY, 0, height, PI, -PI));
   rotateY(map(mouseX, 0, width, -PI,  PI));
-  
+
   if (fuctional)
     c.showRubik3D();
   else
@@ -46,7 +47,7 @@ void keyPressed() {
         c.down();
         println("Down");
         break;
-      case '3': 
+      case '3':
         c.middleY(); // En base a cara 0
         println("My");
         break;
