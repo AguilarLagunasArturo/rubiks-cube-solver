@@ -2,6 +2,7 @@ class Rubik {
   // Class variables
   int[][][] cubeID; // Arreglo ID para cada cara
   int[][][] solvedState; // Arreglo del estado resuelto del cubo
+  Cube render;
   
   // Permutaciones de ID sentido horario [CARA][PERMUTACION]
   int[][] permutations = new int[][] {
@@ -19,13 +20,6 @@ class Rubik {
   int cubeLevels;  // Niveles que el rubik tiene ej. 3: 3x3
   int aux = 0;     // Variable auxiliar
 
-  // ****************************************** Refactor ********************
-  // Variables para GUI
-  int squareSize;   // Tamaño de las piezas en pixeles
-  color[] colorSheet = new color[FACES]; // Arreglo de colores para cada cara
-  Cube cube3D;
-  // ************************************************************************
-
   // Constructor
   Rubik(int level) {
     // Asigna tamaño y nivel al cubo y piezas
@@ -41,21 +35,8 @@ class Rubik {
         }
       }
     }
-
-    // ****************************************** Refactor ********************
-    // Variables para GUI
-    squareSize = height/(cubeLevels*3);  
-    // Crea color para cada cara asociado a ID
-    colorSheet[0] = color(20, 10, 210); // Azul
-    colorSheet[1] = color(250, 140, 0); // Anaranjado
-    colorSheet[2] = color(36, 36, 36);  // Negro
-    colorSheet[3] = color(200, 10, 10); // Rojo
-    colorSheet[4] = color(200, 200, 5); // Amarillo
-    colorSheet[5] = color(10, 220, 20); // Verde
-    
-    // Niveles, Longitud, Identificador lógico, Color en cada cara
-    cube3D = new Cube(level, squareSize * level, cubeID);
-    // ************************************************************************
+    // Niveles, Identificador de piezas
+    render = new Cube(cubeLevels, cubeID);
   }
   
   // ** Resolución **
@@ -65,13 +46,16 @@ class Rubik {
   
   // Mezclar
   void scramble(int moves) {
-    for (int s = 0; s < moves; s++) {
+    for (int s = 0; s < moves; s++){
       randomMove();
     }
-    printCubeState();
   }
   void randomMove() {
     aux = floor(random(6));
+    // **********************************************************
+    // if render.moving:
+    //   render.addStep(aux);
+    // **********************************************************
     switch(aux) {
     case 0:
       right();
@@ -95,7 +79,7 @@ class Rubik {
       print("Not a move.");
     }
   }
-  // Movimientos sentido horario
+  // Movimientos sentido horario | Permutar cara antes que centro
   void right() {
     c.permutateFace(3);
     c.permutateMiddle(0, 3, cubeLevels-1);
@@ -132,7 +116,21 @@ class Rubik {
   void middleZ() {
     c.permutateMiddle(2, 2, 1);
   }
-  // Permutacion de centros
+  // Permutación: Giro 90° Sentido horario de una cara
+  void permutateFace(int face) {
+    int[][] auxCube = new int[cubeLevels][cubeLevels];
+    for (j = 0; j < cubeLevels; j++) {
+      for (k = 0; k < cubeLevels; k++) {
+        auxCube[j][k] = cubeID[face][j][k];
+      }
+    }
+    for (j = 0; j < cubeLevels; j++) {
+      for (k = 0; k < cubeLevels; k++) {
+        cubeID[face][j][k] = auxCube[cubeLevels-(k+1)][j];
+      }
+    }
+  }
+  // Permutación de centros
   void permutateMiddle(int axis, int face, int level) {
     int toFace;
     int onFace = permutations[face][0];
@@ -185,21 +183,7 @@ class Rubik {
         }
       }
     }
-    cube3D.updateWith(cubeID);
-  }
-  // Permutación: Giro 90° Sentido horario de una cara
-  void permutateFace(int face) {
-    int[][] auxCube = new int[cubeLevels][cubeLevels];
-    for (j = 0; j < cubeLevels; j++) {
-      for (k = 0; k < cubeLevels; k++) {
-        auxCube[j][k] = cubeID[face][j][k];
-      }
-    }
-    for (j = 0; j < cubeLevels; j++) {
-      for (k = 0; k < cubeLevels; k++) {
-        cubeID[face][j][k] = auxCube[cubeLevels-(k+1)][j];
-      }
-    }
+    render.updateWith(cubeID);
   }
 
   void printCubeState() {
@@ -212,108 +196,13 @@ class Rubik {
       }
     }
   }
-
-  // *** 2D ***
-  void showRubik2D() {
-    int x, xx, y, yy;
-    x = 0;
-    y = 0;
-    xx = squareSize;
-    yy = squareSize;
-    // Draw Face #0
-    for (j = 0; j < cubeLevels; j++) {
-      for (k = 0; k < cubeLevels; k++) {
-        fill(colorSheet[cubeID[0][j][k]]);
-        x = squareSize * cubeLevels + squareSize * k;
-        y = squareSize *j;
-        rect(float(x), float(y), float(xx), float(yy));
-
-        fill(255);
-        text(cubeID[0][j][k], x + xx/3, y + yy/2);
-      }
-    }
-    // Draw Faces (1 - 4)
-    for (i = 1; i < FACES-1; i ++) {
-      for (j = 0; j < cubeLevels; j++) {
-        for (k = 0; k < cubeLevels; k++) {
-          fill(colorSheet[cubeID[i][j][k]]);
-          x = squareSize *k + cubeLevels * squareSize * (i-1);
-          y = squareSize * cubeLevels + squareSize * j;
-          rect(float(x), float(y), float(xx), float(yy));
-
-          fill(255);
-          text(cubeID[i][j][k], x + xx/3, y + yy/2);
-        }
-      }
-    }
-    // Draw Face #5
-    for (j = 0; j < cubeLevels; j++) {
-      for (k = 0; k < cubeLevels; k++) {
-        fill(colorSheet[cubeID[5][j][k]]);
-        x = squareSize * cubeLevels + squareSize * k;
-        y = squareSize * cubeLevels * 2 + squareSize * j;
-        rect(float(x), float(y), float(xx), float(yy));
-
-        fill(255);
-        text(cubeID[5][j][k], x + xx/3, y + yy/2);
-      }
-    }
-  }
-
-  void drawFace(int face) {
-    int x, xx, y, yy;
-    x = 0;
-    y = 0;
-    xx = squareSize;
-    yy = squareSize;
-
-    // Draw Face #n
-    for (j = 0; j < cubeLevels; j++) {
-      for (k = 0; k < cubeLevels; k++) {
-        fill(colorSheet[cubeID[face][j][k]]);
-        x = squareSize * k;
-        y = squareSize * j;
-        rect(float(x), float(y), float(xx), float(yy));
-
-        fill(200);
-        text(str(cubeID[face][j][k]), x + xx/2, y + yy/2);
-      }
-    }
-  }
-
-  // *** 3D ***
-  void showRubik3D() {
-    float offset = squareSize * cubeLevels;
-    
-    pushMatrix();
-    translate(-offset/2, -offset/2, offset/2);
-    drawFace(2);
-    rotateY(PI);
-    translate(-offset, 0, offset);
-    drawFace(4);
-    popMatrix();
-    
-    pushMatrix();
-    rotateY(PI/2);
-    translate(-offset/2, -offset/2, offset/2);
-    drawFace(3);
-    rotateY(PI);
-    translate(-offset, 0, offset);
-    drawFace(1);
-    popMatrix();
-    
-    pushMatrix();
-    rotateX(PI/2);
-    translate(-offset/2, -offset/2, offset/2);
-    drawFace(0);
-    rotateX(PI);
-    translate(0, -offset, offset);
-    drawFace(5);
-    popMatrix();
-  }
   
   void drawRubik3D() {
-    //cube3D.updateWith(cubeID);
-    cube3D.drawCube();
+    //render.updateWith(cubeID);
+    render.drawCube();
+  }
+  void drawRubik2D() {
+    //render.updateWith(cubeID);
+    render.drawFlatCube();
   }
 }

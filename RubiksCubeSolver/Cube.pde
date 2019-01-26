@@ -1,11 +1,13 @@
 class Cube {
-  // Class variables
+  // ** Class variables **
   Piece[][][] pieces;
   int level;
+  float lenght;
+  float piece_lenght;
+  float flat_piece;
   
   // Rendering stuff
   int[][][] cubeID;
-  
   color[] colorSheet = new color[]{
     color(20, 10, 210), // Azul
     color(250, 140, 0), // Anaranjado
@@ -29,17 +31,22 @@ class Cube {
   int rate = 16;
   boolean moving = false;
   
-  // Constructor
-  Cube(int lv, float lenght, int[][][] id) {
+  // ** Constructor **
+  Cube(int lv, int[][][] id) {
     cubeID = id;
     level = lv;
     pieces = new Piece[level][level][level];
+    
+    if (width < height) 
+      lenght = width / 2; 
+    else
+      lenght = height / 2; 
+    piece_lenght = lenght / level;
+    flat_piece = piece_lenght / 2;
+    
     int total_pieces = (int)(pow(level, 3) - pow(level - 2, 3));
-
-    float piece_lenght = lenght / level;
     float piece_radius = piece_lenght / 2;
     float cube_radius = (level * piece_lenght) / 2;
-
     float offset = piece_radius - cube_radius;
 
     for (int j = 0; j < level; j++) {
@@ -68,75 +75,16 @@ class Cube {
   }
   
   // ** Class fuctions **
-  
-  // Rendering
-  void drawCube() {
-    layerPieces = 0;
-    for (xyz[1] = 0; xyz[1] < level; xyz[1]++) {
-      for (xyz[2] = 0; xyz[2] < level; xyz[2]++) {
-        for (xyz[0] = 0; xyz[0] < level; xyz[0]++) {
-          if (pieces[xyz[0]][xyz[1]][xyz[2]] != null) {
-            if (moving){
-              if (xyz[axis] == layer){
-                cubeLayer[layerPieces] = pieces[xyz[0]][xyz[1]][xyz[2]];
-                layerPieces ++;
-              }else{
-                pieces[xyz[0]][xyz[1]][xyz[2]].drawPiece();
-              }
-            }else{
-              pieces[xyz[0]][xyz[1]][xyz[2]].drawPiece();
-            }
-          }
-        }
-      }
-    }
-    if (moving)
-      animateLayer();
-  }
-  void animateLayer(){
-    rotateLayer();
-    for(int i = 0; i < layerPieces; i++){
-      if (cubeLayer != null){
-        cubeLayer[i].drawPiece();
-      }
-    }
-    frame ++;
-    if (frame == rate){
-      moving = false;
-      frame = 0;
-      // Return the piece to original position
-      for(int i = 0; i < layerPieces; i++){
-        if (cubeLayer != null){
-          cubeLayer[i].amt[axis] = 0;
-        }
-      }
-      updateColors();
-    }
-  }
-  void rotateLayer(){
-    for(int i = 0; i < layerPieces; i++){
-      if (cubeLayer != null){
-        cubeLayer[i].amt[axis] += PI/(2 * rate) * direction;
-      }
-    }
-  }
-  
+  // Get current state
   void updateWith(int[][][] newID){
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < level; j++) {
-        for (int k = 0; k < level; k++) {
-          cubeID[i][j][k] = newID[i][j][k];
-        }
-      }
-    }
+    cubeID = newID;
   }
-  
+  // Rendering in 3D *****************************************************************************
   void updateColors(){
     for (int i = 0; i < 6; i++){
       updateFaceColor(i);
     }
   }
-  
   void updateFaceColor(int face){
     for (int i = 0; i  < level; i++){
       for (int j = 0; j  < level; j++){
@@ -231,5 +179,96 @@ class Cube {
           println("Not a move.");
       }
     }
+  }
+  // Animation
+  void rotateLayer(){
+    for(int i = 0; i < layerPieces; i++){
+      if (cubeLayer != null){
+        cubeLayer[i].amt[axis] += PI/(2 * rate) * direction;
+      }
+    }
+  }
+  void animateLayer(){
+    rotateLayer();
+    // Draw the layer
+    for(int i = 0; i < layerPieces; i++){
+      if (cubeLayer != null){
+        cubeLayer[i].drawPiece();
+      }
+    }
+    frame ++;
+    if (frame == rate){
+      moving = false;
+      frame = 0;
+      // Return the piece to original position
+      for(int i = 0; i < layerPieces; i++){
+        if (cubeLayer != null){
+          cubeLayer[i].amt[axis] = 0;
+        }
+      }
+      updateColors();
+      // ************************************+*******************
+      // if stepsAvailable:
+      //   move3x3(steps.first);
+      //   steps.pop();
+      //   updateColors();
+      // else:
+      //   updateColors();
+      // ************************************+*******************
+    }
+  }
+  void drawCube() {
+    layerPieces = 0;
+    for (xyz[1] = 0; xyz[1] < level; xyz[1]++) {
+      for (xyz[2] = 0; xyz[2] < level; xyz[2]++) {
+        for (xyz[0] = 0; xyz[0] < level; xyz[0]++) {
+          if (pieces[xyz[0]][xyz[1]][xyz[2]] != null) {
+            if (moving){
+              if (xyz[axis] == layer){
+                cubeLayer[layerPieces] = pieces[xyz[0]][xyz[1]][xyz[2]];
+                layerPieces ++;
+              }else{
+                pieces[xyz[0]][xyz[1]][xyz[2]].drawPiece();
+              }
+            }else{
+              pieces[xyz[0]][xyz[1]][xyz[2]].drawPiece();
+            }
+          }
+        }
+      }
+    }
+    if (moving){
+      animateLayer();
+    }
+  }
+  // Rendering in 2D *****************************************************************************
+  void drawFace(int face, float xOff, float yOff) {
+    float x, xx, y, yy;
+    x = 0;
+    y = 0;
+    xx = flat_piece;
+    yy = flat_piece;
+
+    // Draw Face #n
+    for (int j = 0; j < level; j++) {
+      for (int k = 0; k < level; k++) {
+        fill(colorSheet[cubeID[face][j][k]]);
+        x = flat_piece * k + xOff;
+        y = flat_piece * j + yOff;
+        rect(x, y, xx, yy);
+
+        fill(200);
+        text(str(cubeID[face][j][k]), x + xx/2, y + yy/2);
+      }
+    }
+  }
+  void drawFlatCube(){
+    float unit = flat_piece * level;
+    float xOff = abs(unit * 4 - width) / 2;
+    float yOff = abs(unit * 3 - height) / 2;
+    drawFace(0, unit + xOff, +yOff);
+    for (int i = 0; i < 4; i++)
+      drawFace(i + 1, unit * i + xOff, unit + yOff);
+    drawFace(5, unit + xOff, unit * 2 + yOff);
   }
 }

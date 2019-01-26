@@ -3,7 +3,7 @@ Rubik c;
 void setup() {
   // Limit: 35 Levels
   c = new Rubik(3);
-  size(400, 400, P3D);
+  size(250, 250, P3D);
 }
 
 void draw() {
@@ -16,43 +16,46 @@ void draw() {
 }
 
 void keyPressed() {
-  if (!c.cube3D.moving) {
+  if (!c.render.moving) {
     switch(key) {
       case 'x':
         c.middleX();
-        c.cube3D.move3x3('x');
+        c.render.move3x3('x');
         break;
       case 'y':
         c.middleY();
-        c.cube3D.move3x3('y');
+        c.render.move3x3('y');
         break;
       case 'z':
         c.middleZ();
-        c.cube3D.move3x3('z');
+        c.render.move3x3('z');
         break;
       case 'f':
         c.front();
-        c.cube3D.move3x3('f');
+        c.render.move3x3('f');
         break;
       case 'b':
         c.back();
-        c.cube3D.move3x3('b');
+        c.render.move3x3('b');
         break;
       case 'r':
         c.right();
-        c.cube3D.move3x3('r');
+        c.render.move3x3('r');
         break;
       case 'l':
         c.left();
-        c.cube3D.move3x3('l');
+        c.render.move3x3('l');
         break;
       case 'u':
         c.up();
-        c.cube3D.move3x3('u');
+        c.render.move3x3('u');
         break;
       case 'd':
         c.down();
-        c.cube3D.move3x3('d');
+        c.render.move3x3('d');
+        break;
+      case 's':
+        c.scramble(2);
         break;
       default:
         println("Not a move.");
