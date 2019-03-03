@@ -75,10 +75,6 @@ class Cube {
   }
   
   // ** Class fuctions **
-  // Get current state
-  void updateWith(int[][][] newID){
-    cubeID = newID;
-  }
   // Rendering in 3D *****************************************************************************
   void updateColors(){
     for (int i = 0; i < 6; i++){
@@ -143,39 +139,66 @@ class Cube {
     layer = layer_;
   }
   // Moves for 3x3 cube
-  void move3x3(char notation){
+  void move3x3(String notation){
     if (!moving){
       moving = true;
       switch (notation){
-        case 'x':
-          move(0, 1, true);
-          break;
-        case 'y':
-          move(1, 1, true);
-          break;
-        case 'z':
-          move(2, 1, true);
-          break;
-        case 'b':
-          move(2, 0, false);
-          break;
-        case 'l':
-          move(0, 0, false);
-          break;
-        case 'u':
-          move(1, 0, false);
-          break;
-        case 'f':
+        case "f":
           move(2, level-1, true);
           break;
-        case 'r':
+        case "b":
+          move(2, 0, false);
+          break;
+        case "u":
+          move(1, 0, false);
+          break;
+        case "r":
           move(0, level-1, true);
           break;
-        case 'd':
+        case "d":
           move(1, level-1, true);
           break;
+        case "l":
+          move(0, 0, false);
+          break;
+        case "x":
+          move(0, 1, true);
+          break;
+        case "y":
+          move(1, 1, true);
+          break;
+        case "z":
+          move(2, 1, true);
+          break;
+        case "f'":
+          move(2, level-1, false);
+          break;
+        case "b'":
+          move(2, 0, true);
+          break;
+        case "u'":
+          move(1, 0, true);
+          break;
+        case "r'":
+          move(0, level-1, false);
+          break;
+        case "d'":
+          move(1, level-1, false);
+          break;
+        case "l'":
+          move(0, 0, true);
+          break;
+        case "x'":
+          move(0, 1, false);
+          break;
+        case "y'":
+          move(1, 1, false);
+          break;
+        case "z'":
+          move(2, 1, false);
+          break;
         default:
-          moving = false;
+          moving = true;
           println("Not a move.");
       }
     }
@@ -206,15 +229,12 @@ class Cube {
           cubeLayer[i].amt[axis] = 0;
         }
       }
+      rubik.move(moveList.get(0));
+      moveList.remove(0);
       updateColors();
-      // ************************************+*******************
-      // if stepsAvailable:
-      //   move3x3(steps.first);
-      //   steps.pop();
-      //   updateColors();
-      // else:
-      //   updateColors();
-      // ************************************+*******************
+      if (moveList.size() > 0){
+        move3x3(moveList.get(0));
+      }
     }
   }
   void drawCube() {

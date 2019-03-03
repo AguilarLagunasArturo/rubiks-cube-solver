@@ -44,77 +44,47 @@ class Rubik {
   // 2do nivel
   // 3er nivel
   
-  // Mezclar
-  void scramble(int moves) {
-    for (int s = 0; s < moves; s++){
-      randomMove();
-    }
+  void addMove(String newMove){
+    moveList.add(newMove);
+    println(moveList.size());
   }
-  void randomMove() {
-    aux = floor(random(6));
-    // **********************************************************
-    // if render.moving:
-    //   render.addStep(aux);
-    // **********************************************************
-    switch(aux) {
-    case 0:
-      right();
-      break;
-    case 1:
-      left();
-      break;
-    case 2:
-      up();
-      break;
-    case 3:
-      down();
-      break;
-    case 4:
-      front();
-      break;
-    case 5:
-      back();
-      break;
-    default:
-      print("Not a move.");
-    }
-  }
+
   // Movimientos sentido horario | Permutar cara antes que centro
   void right() {
-    c.permutateFace(3);
-    c.permutateMiddle(0, 3, cubeLevels-1);
+    permutateFace(3);
+    permutateMiddle(0, 3, cubeLevels-1);
   }
   void left() {
-    c.permutateFace(1);
-    c.permutateMiddle(0, 1, 0);
+    permutateFace(1);
+    permutateMiddle(0, 1, 0);
   }
   void front() {
-    c.permutateFace(2);
-    c.permutateMiddle(2, 2, cubeLevels-1);
+    permutateFace(2);
+    permutateMiddle(2, 2, cubeLevels-1);
   }
   void back() {
-    c.permutateFace(4);
-    c.permutateMiddle(2, 4, 0);
+    permutateFace(4);
+    permutateMiddle(2, 4, 0);
   }
   void up() {
-    c.permutateFace(0);
-    c.permutateMiddle(1, 0, 0);
+    permutateFace(0);
+    permutateMiddle(1, 0, 0);
   }
   void down() {
-    c.permutateFace(5);
-    c.permutateMiddle(1, 5, cubeLevels-1);
+    permutateFace(5);
+    permutateMiddle(1, 5, cubeLevels-1);
   }
   // En base a cara 3
   void middleX() {
-    c.permutateMiddle(0, 3, 1);
+    permutateMiddle(0, 3, 1);
   }
   // En base a cara 5
   void middleY() {
-    c.permutateMiddle(1, 5, 1);
+    permutateMiddle(1, 5, 1);
   }
   // En base a cara 2
   void middleZ() {
-    c.permutateMiddle(2, 2, 1);
+    permutateMiddle(2, 2, 1);
   }
   // Permutación: Giro 90° Sentido horario de una cara
   void permutateFace(int face) {
@@ -183,26 +153,95 @@ class Rubik {
         }
       }
     }
-    render.updateWith(cubeID);
   }
-
-  void printCubeState() {
-    for (i = 0; i < FACES; i++) {
-      for (j = 0; j < cubeLevels; j++) {
-        for (k = 0; k < cubeLevels; k++) {
-          print(cubeID[i][j][k]);
-        }
-        println();
-      }
+  
+  void move(String permutation){
+    switch(permutation){
+      case "r":
+        right();
+        break;
+      case "l":
+        left();
+        break;
+      case "f":
+        front();
+        break;
+      case "b":
+        back();
+        break;
+      case "u":
+        up();
+        break;
+      case "d":
+        down();
+        break;
+      case "x":
+        middleX();
+        break;
+      case "y":
+        middleY();
+        break;
+      case "z":
+        middleZ();
+        break;
+      case "r'":
+        right();
+        right();
+        right();
+        break;
+      case "l'":
+        left();
+        left();
+        left();
+        break;
+      case "f'":
+        front();
+        front();
+        front();
+        break;
+      case "b'":
+        back();
+        back();
+        back();
+        break;
+      case "u'":
+        up();
+        up();
+        up();
+        break;
+      case "d'":
+        down();
+        down();
+        down();
+        break;
+      case "x'":
+        middleX();
+        middleX();
+        middleX();
+        break;
+      case "y'":
+        middleY();
+        middleY();
+        middleY();
+        break;
+      case "z'":
+        middleZ();
+        middleZ();
+        middleZ();
+        break;
+      default:
+        println("Not a move.");
     }
   }
   
+  void readMoves(String file){
+    
+  }
+  
   void drawRubik3D() {
-    //render.updateWith(cubeID);
     render.drawCube();
   }
   void drawRubik2D() {
-    //render.updateWith(cubeID);
     render.drawFlatCube();
   }
 }
