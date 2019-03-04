@@ -2,6 +2,8 @@ class Rubik {
   // Class variables
   int[][][] cubeID; // Arreglo ID para cada cara
   int[][][] solvedState; // Arreglo del estado resuelto del cubo
+  // ************** array corners [8][a][b][c]
+  // ************** array edges [18][a][b]
   Cube render;
   
   // Permutaciones de ID sentido horario [CARA][PERMUTACION]
@@ -44,9 +46,159 @@ class Rubik {
   // 2do nivel
   // 3er nivel
   
+  // Piece orientation
+  boolean isCornerOk(int piece){
+    boolean correct = false;
+    switch(piece){
+      case 0:
+        if(cubeID[0][0][0] == solvedState[0][0][0] &&
+           cubeID[4][0][2] == solvedState[4][0][2] &&
+           cubeID[1][0][0] == solvedState[1][0][0]){
+           correct = true;
+         }
+        break;
+      case 1:
+        if(cubeID[0][0][2] == solvedState[0][0][2] &&
+           cubeID[3][0][2] == solvedState[3][0][2] &&
+           cubeID[4][0][0] == solvedState[4][0][0]){
+           correct = true;
+         }
+        break;
+      case 2:
+        if(cubeID[0][2][0] == solvedState[0][2][0] &&
+           cubeID[2][0][0] == solvedState[2][0][0] &&
+           cubeID[1][0][2] == solvedState[1][0][2]){
+           correct = true;
+         }
+        break;
+      case 3:
+        if(cubeID[0][2][2] == solvedState[0][2][2] &&
+           cubeID[3][0][0] == solvedState[3][0][0] &&
+           cubeID[2][0][2] == solvedState[2][0][2]){
+           correct = true;
+         }
+        break;
+      case 4:
+        if(cubeID[5][2][0] == solvedState[5][2][0] &&
+           cubeID[4][2][2] == solvedState[4][2][2] &&
+           cubeID[1][2][0] == solvedState[1][2][0]){
+           correct = true;
+         }
+        break;
+      case 5:
+        if(cubeID[5][2][2] == solvedState[5][2][2] &&
+           cubeID[3][2][2] == solvedState[3][2][2] &&
+           cubeID[4][2][0] == solvedState[4][2][0]){
+           correct = true;
+         }
+        break;
+      case 6:
+        if(cubeID[5][0][0] == solvedState[5][0][0] &&
+           cubeID[2][2][0] == solvedState[2][2][0] &&
+           cubeID[1][2][2] == solvedState[1][2][2]){
+           correct = true;
+         }
+        break;
+      case 7:
+        if(cubeID[5][0][2] == solvedState[5][0][2] &&
+           cubeID[3][2][0] == solvedState[3][2][0] &&
+           cubeID[2][2][2] == solvedState[2][2][2]){
+           correct = true;
+         }
+        break;
+      default:
+        println("Not a corner.");
+        break;
+    }
+    println(correct);
+    return correct;
+  }
+  
+  boolean isEdgeOk(int piece){
+    boolean correct = false;
+    switch(piece){
+      case 0:
+        if(cubeID[0][0][1] == solvedState[0][0][1] &&
+           cubeID[4][0][1] == solvedState[4][0][1]){
+           correct = true;
+         }
+        break;
+      case 1:
+        if(cubeID[0][1][0] == solvedState[0][1][0] &&
+           cubeID[1][0][1] == solvedState[1][0][1]){
+           correct = true;
+         }
+        break;
+      case 2:
+        if(cubeID[0][1][2] == solvedState[0][1][2] &&
+           cubeID[3][0][1] == solvedState[3][0][1]){
+           correct = true;
+         }
+        break;
+      case 3:
+        if(cubeID[0][2][1] == solvedState[0][2][1] &&
+           cubeID[2][0][1] == solvedState[2][0][1]){
+           correct = true;
+         }
+        break;
+      case 4:
+        if(cubeID[1][1][0] == solvedState[1][1][0] &&
+           cubeID[4][1][2] == solvedState[4][1][2]){
+           correct = true;
+         }
+        break;
+      case 5:
+        if(cubeID[4][1][0] == solvedState[4][1][0] &&
+           cubeID[3][1][2] == solvedState[3][1][2]){
+           correct = true;
+         }
+        break;
+      case 6:
+        if(cubeID[2][1][0] == solvedState[2][1][0] &&
+           cubeID[1][1][2] == solvedState[1][1][2]){
+           correct = true;
+         }
+        break;
+      case 7:
+        if(cubeID[3][1][0] == solvedState[3][1][0] &&
+           cubeID[2][1][2] == solvedState[2][1][2]){
+           correct = true;
+         }
+        break;
+      case 8:
+        if(cubeID[5][2][1] == solvedState[5][2][1] &&
+           cubeID[2][2][1] == solvedState[2][2][1]){
+           correct = true;
+         }
+        break;
+      case 9:
+        if(cubeID[5][1][0] == solvedState[5][1][0] &&
+           cubeID[1][2][1] == solvedState[1][2][1]){
+           correct = true;
+         }
+        break;
+      case 10:
+        if(cubeID[5][1][2] == solvedState[5][1][2] &&
+           cubeID[3][2][1] == solvedState[3][2][1]){
+           correct = true;
+         }
+        break;
+      case 11:
+        if(cubeID[5][0][1] == solvedState[5][0][1] &&
+           cubeID[4][2][1] == solvedState[4][2][1]){
+           correct = true;
+         }
+        break;
+      default:
+        println("Not a piece.");
+        break;
+    }
+    println(correct);
+    return correct;
+  }
+  
   void addMove(String newMove){
     moveList.add(newMove);
-    println(moveList.size());
   }
 
   // Movimientos sentido horario | Permutar cara antes que centro
@@ -234,8 +386,16 @@ class Rubik {
     }
   }
   
-  void readMoves(String file){
-    
+  void readAlgorithm(String file){
+    String[] algorithm = loadStrings(file);
+    for (int i = 0; i < algorithm.length; i++){
+      for (int j = 0; j < availableMoves.length; j++){
+        if (availableMoves[j].equals(algorithm[i])){
+          addMove(availableMoves[j]);
+        }
+      }
+    }
+    render.move3x3(moveList.get(0));
   }
   
   void drawRubik3D() {

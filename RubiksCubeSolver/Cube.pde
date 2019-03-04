@@ -28,7 +28,7 @@ class Cube {
   
   // Animation
   int frame = 0;
-  int rate = 16;
+  int rate = 26;
   boolean moving = false;
   
   // ** Constructor **

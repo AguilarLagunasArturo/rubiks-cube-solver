@@ -36,5 +36,7 @@ void keyPressed() {
     for (int i = 0; i < 20; i ++)
       rubik.addMove(availableMoves[floor(random(availableMoves.length))]);
     rubik.render.move3x3(moveList.get(0));
+  }else if (key == 'a'){
+    rubik.readAlgorithm("algorithms/magic.txt");
   }
 }
