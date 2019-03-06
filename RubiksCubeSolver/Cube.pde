@@ -11,7 +11,7 @@ class Cube {
   color[] colorSheet = new color[]{
     color(20, 10, 210), // Azul
     color(250, 140, 0), // Anaranjado
-    color(36, 36, 36),  // Negro
+    color(236, 236, 236),  // Negro
     color(200, 10, 10), // Rojo
     color(200, 200, 5), // Amarillo
     color(10, 220, 20)  // Verde
