@@ -2,8 +2,6 @@ class Rubik {
   // Class variables
   int[][][] cubeID; // Arreglo ID para cada cara
   int[][][] solvedState; // Arreglo del estado resuelto del cubo
-  // ************** array corners [8][a][b][c]
-  // ************** array edges [18][a][b]
   Cube render;
   
   // Permutaciones de ID sentido horario [CARA][PERMUTACION]
@@ -43,6 +41,77 @@ class Rubik {
   
   // ** Resolución **
   // 1er nivel
+  // Cross Edges: 3, 6, 7, 11
+  void solveCross(){
+    solveEdge(3);
+    render.move3x3(moveList.get(0));
+    //solveEdge(6);
+    //solveEdge(3);
+    //solveEdge(3);
+    println("Done: " + moveList.size());
+  }
+  
+  void solveEdge(int edge){
+    int edgePosition = findEdge(edge);
+    if (edgePosition == 6){
+      addMove("f");
+    }else if(edgePosition == 7){
+      addMove("r");
+      addMove("u");
+    }else if (edgePosition == 11){
+      addMove("d");
+      addMove("d");
+      addMove("b");
+      addMove("b");
+      addMove("u");
+      addMove("u");
+    }else if (edgePosition == 0){
+      addMove("u");
+      addMove("u");
+    }else if (edgePosition == 1){
+      addMove("u'");
+    }else if (edgePosition == 2){
+      addMove("u");
+    }else{
+      if (edgePosition == 4){
+        addMove("b'");
+        addMove("u");
+        addMove("u");
+      }else if (edgePosition == 5){
+        addMove("b");
+        addMove("u");
+        addMove("u");
+      }else if (edgePosition == 8){
+        addMove("b");
+        addMove("b");
+        addMove("u");
+        addMove("u");
+      }else if (edgePosition == 9){
+        addMove("d'");
+        addMove("b");
+        addMove("b");
+        addMove("u");
+        addMove("u");
+      }else if (edgePosition == 10){
+        addMove("d");
+        addMove("b");
+        addMove("b");
+        addMove("u");
+        addMove("u");
+      }
+      adjustEdge(edge);
+    }
+  }
+  void adjustEdge(int edge){
+    if (isEdgeInPlace(edge, edge)){
+      if (!isEdgeOriented(edge)){
+        addMove("f");
+        addMove("r");
+        addMove("f'");
+        addMove("u");
+      }
+    }
+  }
   // 2do nivel
   // 3er nivel
   
@@ -113,88 +182,95 @@ class Rubik {
     println(correct);
     return correct;
   }
-  
-  boolean isEdgeOk(int piece){
-    boolean correct = false;
-    switch(piece){
+  // Edges orientation and position
+  int[] getEdgeValue(int edge, int[][][] state){
+    int[] edgeValue = new int[2];
+    switch(edge){
       case 0:
-        if(cubeID[0][0][1] == solvedState[0][0][1] &&
-           cubeID[4][0][1] == solvedState[4][0][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[0][0][1];
+        edgeValue[1] = state[4][0][1];
         break;
       case 1:
-        if(cubeID[0][1][0] == solvedState[0][1][0] &&
-           cubeID[1][0][1] == solvedState[1][0][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[0][1][0];
+        edgeValue[1] = state[1][0][1];
         break;
       case 2:
-        if(cubeID[0][1][2] == solvedState[0][1][2] &&
-           cubeID[3][0][1] == solvedState[3][0][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[0][1][2];
+        edgeValue[1] = state[3][0][1];
         break;
       case 3:
-        if(cubeID[0][2][1] == solvedState[0][2][1] &&
-           cubeID[2][0][1] == solvedState[2][0][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[0][2][1];
+        edgeValue[1] = state[2][0][1];
         break;
       case 4:
-        if(cubeID[1][1][0] == solvedState[1][1][0] &&
-           cubeID[4][1][2] == solvedState[4][1][2]){
-           correct = true;
-         }
+        edgeValue[0] = state[1][1][0];
+        edgeValue[1] = state[4][1][2];
         break;
       case 5:
-        if(cubeID[4][1][0] == solvedState[4][1][0] &&
-           cubeID[3][1][2] == solvedState[3][1][2]){
-           correct = true;
-         }
+        edgeValue[0] = state[4][1][0];
+        edgeValue[1] = state[3][1][2];
         break;
       case 6:
-        if(cubeID[2][1][0] == solvedState[2][1][0] &&
-           cubeID[1][1][2] == solvedState[1][1][2]){
-           correct = true;
-         }
+        edgeValue[0] = state[2][1][0];
+        edgeValue[1] = state[1][1][2];
         break;
       case 7:
-        if(cubeID[3][1][0] == solvedState[3][1][0] &&
-           cubeID[2][1][2] == solvedState[2][1][2]){
-           correct = true;
-         }
+        edgeValue[0] = state[3][1][0];
+        edgeValue[1] = state[2][1][2];
         break;
       case 8:
-        if(cubeID[5][2][1] == solvedState[5][2][1] &&
-           cubeID[2][2][1] == solvedState[2][2][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[5][2][1];
+        edgeValue[1] = state[2][2][1];
         break;
       case 9:
-        if(cubeID[5][1][0] == solvedState[5][1][0] &&
-           cubeID[1][2][1] == solvedState[1][2][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[5][1][0];
+        edgeValue[1] = state[1][2][1];
         break;
       case 10:
-        if(cubeID[5][1][2] == solvedState[5][1][2] &&
-           cubeID[3][2][1] == solvedState[3][2][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[5][1][2];
+        edgeValue[1] = state[3][2][1];
         break;
       case 11:
-        if(cubeID[5][0][1] == solvedState[5][0][1] &&
-           cubeID[4][2][1] == solvedState[4][2][1]){
-           correct = true;
-         }
+        edgeValue[0] = state[5][0][1];
+        edgeValue[1] = state[4][2][1];
         break;
       default:
         println("Not a piece.");
+        edgeValue = null;
         break;
     }
-    println(correct);
-    return correct;
+    return edgeValue;
+  }
+  
+  boolean isEdgeOriented(int piece){
+    println(getEdgeValue(piece, cubeID)[0] + " == " + getEdgeValue(piece, solvedState)[0]);
+    println(getEdgeValue(piece, cubeID)[1] + " == " + getEdgeValue(piece, solvedState)[1]);
+    if (getEdgeValue(piece, cubeID)[0] == getEdgeValue(piece, solvedState)[0] &&
+        getEdgeValue(piece, cubeID)[1] == getEdgeValue(piece, solvedState)[1])
+      return true;
+    else 
+      return false;
+  }
+  
+  boolean isEdgeInPlace(int piece, int spot){
+    if ((getEdgeValue(spot, cubeID)[0] == getEdgeValue(piece, solvedState)[0] &&
+        getEdgeValue(spot, cubeID)[1] == getEdgeValue(piece, solvedState)[1]) ||
+        (getEdgeValue(spot, cubeID)[0] == getEdgeValue(piece, solvedState)[1] &&
+        getEdgeValue(spot, cubeID)[1] == getEdgeValue(piece, solvedState)[0]))
+      return true;
+    else 
+      return false;
+  }
+  
+  int findEdge(int piece){
+    int spots = 12;
+    int spot = 0;
+    for (int i = 0; i < spots; i++){
+      if (isEdgeInPlace(piece, i)){
+        spot = i;
+      }
+    }
+    return spot;
   }
   
   void addMove(String newMove){
