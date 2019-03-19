@@ -1,0 +1,2 @@
+l, u, f solve probrem in green black
+line 10 r,u,f is not well placed

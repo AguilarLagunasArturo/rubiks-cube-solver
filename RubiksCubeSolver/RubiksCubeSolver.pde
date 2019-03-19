@@ -1,6 +1,7 @@
 // Lista de movimientos que aún no se realizan
 ArrayList<String> moveList = new ArrayList<String>();
 Rubik rubik;
+PrintWriter output;
 String[] availableMoves = new String[]{
   "u", "r", "d", "l",  "f", "b",
   "u'","r'","d'","l'", "f'","b'",
@@ -12,8 +13,9 @@ float theta = 0;
 void setup(){
   // Limit: 35 Levels
   rubik = new Rubik(3);
-  size(250, 250, P3D);
+  size(350, 350, P3D);
   stroke(3, 79, 80);
+  output = createWriter("algorithms/cross.txt");
 }
 
 void draw() {
@@ -42,6 +44,6 @@ void keyPressed() {
   }else if (key == 'a'){
     rubik.readAlgorithm("algorithms/pattern.txt");
   }else if (key == '0'){
-    println(rubik.findEdge(0));
+    rubik.solveCube();
   }
 }
