@@ -10,5 +10,3 @@
 - Perform moves for a 3x3 cube.
 - Render in 2D.
 - Render in 3D.
-___
-El código contiene comentarios en spanglish ^-^'
